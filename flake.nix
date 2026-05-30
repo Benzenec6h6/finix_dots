@@ -32,7 +32,7 @@
     nixpkgs,
     nixpkgs-unstable,
     nix-cachyos-kernel,
-    finix, # ★ 忘れずにここに明示（...に含まれますが、明示すると見やすいです）
+    finix,
     disko,
     home-manager,
     sops-nix,
@@ -42,26 +42,32 @@
     vars = import ./vars.nix;
     system = vars.system;
 
+    finalPkgs = import nixpkgs {
+      inherit system;
+      config = {
+        allowUnfree = true;
+      };
+      overlays = [
+        nix-cachyos-kernel.overlays.default
+        (final: prev: {
+          unstable = import nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        })
+      ];
+    };
+
     mkFinixConfig = host:
-    # ★ 修正：nixpkgs からではなく、inputs.finix から lib.finixSystem を呼び出す
       inputs.finix.lib.finixSystem {
-        lib = nixpkgs.lib; # ★ 修正：Finixの評価エンジンに実際のlibを明示的に渡す
+        lib = nixpkgs.lib;
         specialArgs = {
           inherit inputs vars;
         };
         modules = [
+          # 2. Finix独自の nixpkgs モジュールに対して、上で作った完成版pkgsを直接注入する
           {
-            nixpkgs.hostPlatform = system;
-            nixpkgs.config.allowUnfree = true;
-            nixpkgs.overlays = [
-              nix-cachyos-kernel.overlays.default
-              (final: prev: {
-                unstable = import nixpkgs-unstable {
-                  system = prev.stdenv.hostPlatform.system;
-                  config.allowUnfree = true;
-                };
-              })
-            ];
+            nixpkgs.pkgs = finalPkgs;
           }
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
