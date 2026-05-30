@@ -7,11 +7,6 @@
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
     finix.url = "github:finix-community/finix";
 
-    impermanence = {
-      url = "github:nix-community/impermanence";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,7 +34,6 @@
     nix-cachyos-kernel,
     finix, # ★ 忘れずにここに明示（...に含まれますが、明示すると見やすいです）
     disko,
-    impermanence,
     home-manager,
     sops-nix,
     nix-index-database,
@@ -69,7 +63,6 @@
               })
             ];
           }
-          impermanence.nixosModules.impermanence
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
           nix-index-database.nixosModules.default
