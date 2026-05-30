@@ -6,6 +6,7 @@
   bootloader = "limine";
   user = {
     name = "teto";
+    passwd = "$y$j9T$0zWocsDrYZlzrQqxhwtsL1$WrHJvm3gyty8Y08Xz9SUVB1DrZUFWU9pu.C9/e/tnM/";
     terminal = "kitty";
     gitName = "Benzenec6h6";
     gitEmail = "aconitinec34h47no11@gmail.com";
